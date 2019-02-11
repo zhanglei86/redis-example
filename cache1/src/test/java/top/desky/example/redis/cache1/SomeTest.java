@@ -28,7 +28,20 @@ public class SomeTest extends BaseTestCase {
     }
 
     @Test
-    public void BlistRedis() {
+    public void BhashRedis() {
+        String key = "userHash";
+
+        //添加
+        redisTemplate.opsForHash().put(key, "phone", 10086);
+        redisTemplate.opsForHash().put(key, "address", "Shanghai");
+        redisTemplate.opsForHash().put(key, "sex", "man");
+        redisTemplate.opsForHash().put(key, "dada", "达达");
+        //修改
+        redisTemplate.opsForHash().put(key, "address", "Beijing");
+    }
+
+    @Test
+    public void ClistRedis() {
         String key = "userList";
 
         List<String> trap = new ArrayList<>();
@@ -48,7 +61,7 @@ public class SomeTest extends BaseTestCase {
     }
 
     @Test
-    public void CsetRedis() {
+    public void DsetRedis() {
         String key = "userSet";
 
         List<String> trap = new ArrayList<>();
@@ -65,16 +78,8 @@ public class SomeTest extends BaseTestCase {
     }
 
     @Test
-    public void DhashRedis() {
-        String key = "userHash";
-
-        //添加
-        redisTemplate.opsForHash().put(key, "phone", 10086);
-        redisTemplate.opsForHash().put(key, "address", "Shanghai");
-        redisTemplate.opsForHash().put(key, "sex", "man");
-        redisTemplate.opsForHash().put(key, "dada", "达达");
-        //修改
-        redisTemplate.opsForHash().put(key, "address", "Beijing");
+    public void EzetRedis() {
+        String key = "userZSet";
     }
 
     @Test
