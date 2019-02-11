@@ -32,5 +32,6 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    compile 'org.projectlombok:lombok'
     compile group: 'com.alibaba', name: 'fastjson', version: '1.2.56'
 }
