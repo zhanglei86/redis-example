@@ -1,13 +1,8 @@
 package top.desky.example.redis.cache1.dal.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Setter
-@Getter
 @Entity
 public class User implements Serializable {
 
@@ -34,4 +29,28 @@ public class User implements Serializable {
     }
 
     //省略Getter 和 Setter
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getMoney() {
+        return money;
+    }
+
+    public void setMoney(long money) {
+        this.money = money;
+    }
 }
