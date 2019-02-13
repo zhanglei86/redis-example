@@ -1,11 +1,14 @@
 package top.desky.example.redis.cache1.util;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -56,6 +59,17 @@ public class JacksonUtils {
         }
     }
 
+    //使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值
+    public static Jackson2JsonRedisSerializer useJackson() {
+        Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        serializer.setObjectMapper(mapper);
+        return serializer;
+    }
+
     /**
      * Object转成JSON数据
      */
@@ -63,8 +77,8 @@ public class JacksonUtils {
         if (object instanceof Integer || object instanceof Long || object instanceof Float || object instanceof Double || object instanceof Boolean || object instanceof String) {
             return String.valueOf(object);
         }
-        ObjectMapper objectMapper = JacksonUtils.createObjectMapper(true, null);
-        // ObjectMapper objectMapper = JacksonUtils.createObjectMapperNullNotEcho(null);
+        ObjectMapper objectMapper = createObjectMapper(true, null);
+        // ObjectMapper objectMapper = createObjectMapperNullNotEcho(null);
         return objectMapper.writeValueAsString(object);
     }
 
@@ -72,7 +86,7 @@ public class JacksonUtils {
      * JSON数据，转成Object
      */
     private <T> T fromJson(String json, Class<T> clazz) throws IOException {
-        ObjectMapper objectMapper = JacksonUtils.createObjectMapper(true, null);
+        ObjectMapper objectMapper = createObjectMapper(true, null);
         return objectMapper.readValue(json, clazz);
     }
 }

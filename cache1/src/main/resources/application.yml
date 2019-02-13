@@ -1,3 +1,4 @@
+#head
 spring:
   cache:
     type: redis
@@ -7,3 +8,10 @@ spring:
     #password: pass1234
     database: 0 #redis默认有16个库，用select命令来切换
     timeout: 6000
+    lettuce:
+      pool:
+        max-active: 8 #最大活跃链接数
+        max-idle: 8 #最大空闲连接数
+        min-idle: 0 #最小空闲连接数
+
+#tail
