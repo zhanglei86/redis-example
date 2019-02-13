@@ -1,5 +1,8 @@
 package top.desky.example.redis.cache1.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +20,16 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import top.desky.example.redis.cache1.util.JacksonUtils;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
 @EnableCaching
+//@AutoConfigureAfter(RedisAutoConfiguration.class)
 @Configuration
 public class RJedisConfig extends CachingConfigurerSupport {
     private static final Logger log = LoggerFactory.getLogger(RJedisConfig.class);
@@ -52,9 +57,9 @@ public class RJedisConfig extends CachingConfigurerSupport {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(JacksonUtils.useJackson());
+        template.setValueSerializer(useJackson());
         template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(JacksonUtils.useJackson());
+        template.setHashValueSerializer(useJackson());
         template.afterPropertiesSet();
         return template;
     }
@@ -102,4 +107,16 @@ public class RJedisConfig extends CachingConfigurerSupport {
             return sb.toString();
         };
     }
+
+    //使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值
+    private static RedisSerializer<Object> useJackson() {
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        mapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        serializer.setObjectMapper(mapper);
+        return serializer;
+    }
+
 }
