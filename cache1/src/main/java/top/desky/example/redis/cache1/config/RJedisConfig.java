@@ -96,6 +96,8 @@ public class RJedisConfig extends CachingConfigurerSupport {
         configMap.put("redis_default", config);
         configMap.put("redis_develop", config.entryTtl(Duration.ofSeconds(120)));
 
+        // TODO 这里配置了默认过期时间，然并卵用。
+
         // 管理器
         RedisCacheManager rcm = RedisCacheManager.builder(factory)
                 // 一定要先调用该方法设置初始化的缓存名，再初始化相关的配置
