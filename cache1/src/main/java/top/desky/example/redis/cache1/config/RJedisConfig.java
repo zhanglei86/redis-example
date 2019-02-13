@@ -11,6 +11,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -48,6 +49,12 @@ public class RJedisConfig extends CachingConfigurerSupport {
         RedisCacheManager.RedisCacheManagerBuilder rcmBuilder = RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(factory);
         RedisCacheManager rcm = rcmBuilder.build();
         return rcm;
+    }
+
+    // 简单K-V操作
+    @Bean
+    public ValueOperations<String, String> valueOperations(RedisTemplate<String, String> redisTemplate) {
+        return redisTemplate.opsForValue();
     }
 
     @Bean

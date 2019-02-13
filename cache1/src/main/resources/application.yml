@@ -5,3 +5,5 @@ spring:
     host: localhost
     port: 6379
     #password: pass1234
+    database: 0 #redis默认有16个库
+    timeout: 6000
