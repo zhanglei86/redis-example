@@ -21,12 +21,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @EnableCaching
 //@AutoConfigureAfter(RedisAutoConfiguration.class)
@@ -67,19 +70,38 @@ public class RJedisConfig extends CachingConfigurerSupport {
     /**
      * 跟spring-cache整合时才用到？另spring-cache默认用的SimpleCacheConfiguration.
      *
-     * @return
+     * @return 管理器
      */
     @Bean
     @Override
     public CacheManager cacheManager() {
-        List<String> cacheNames = Arrays.asList("redis_default", "redis_develop");
+        // 生成一个默认配置，通过config对象即可对缓存进行自定义配置
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
+        // 设置缓存的默认过期时间，也是使用Duration设置
+        config = config.entryTtl(Duration.ofMinutes(10))
+                // 设置 key为string序列化
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                // 设置value为json序列化
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(useJackson()))
+                // 不缓存空值
+                .disableCachingNullValues();
 
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
-        redisCacheConfiguration.entryTtl(Duration.ofSeconds(3600));
+        // 设置一个初始化的缓存空间set集合
+        Set<String> cacheNames = new HashSet<>();
+        cacheNames.add("redis_default");
+        cacheNames.add("redis_develop");
+
+        // 对每个缓存空间应用不同的配置
+        Map<String, RedisCacheConfiguration> configMap = new HashMap<>();
+        configMap.put("redis_default", config);
+        configMap.put("redis_develop", config.entryTtl(Duration.ofSeconds(120)));
 
         // 管理器
-        RedisCacheManager.RedisCacheManagerBuilder rcmBuilder = RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(factory);
-        RedisCacheManager rcm = rcmBuilder.build();
+        RedisCacheManager rcm = RedisCacheManager.builder(factory)
+                // 一定要先调用该方法设置初始化的缓存名，再初始化相关的配置
+                .initialCacheNames(cacheNames)
+                .withInitialCacheConfigurations(configMap)
+                .build();
         // 其他的
         SimpleCacheManager scm = new SimpleCacheManager();
         ConcurrentMapCacheManager cmcm = new ConcurrentMapCacheManager();

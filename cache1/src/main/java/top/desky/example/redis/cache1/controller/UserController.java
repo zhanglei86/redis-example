@@ -17,7 +17,7 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @Cacheable(value = "users", key = "#userId", unless = "#result.money < 10000")
+    @Cacheable(cacheManager = "cacheManager", value = "users", key = "#userId", unless = "#result.money < 10000")
     @GetMapping(value = "/{userId}")
     public Object getUser(@PathVariable Long userId) {
         log.info("获取user信息根据ID-> {}.", userId);
