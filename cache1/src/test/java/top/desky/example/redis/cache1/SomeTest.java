@@ -6,14 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SomeTest extends BaseTestCase {
 
     @Autowired
-    private RedisTemplate<String, Serializable> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
@@ -23,7 +22,7 @@ public class SomeTest extends BaseTestCase {
         String value = "password";
 
         redisTemplate.opsForValue().set(key, value);
-        Serializable sv = redisTemplate.opsForValue().get(key);
+        Object sv = redisTemplate.opsForValue().get(key);
         Assert.assertEquals(value, String.valueOf(sv));
     }
 
