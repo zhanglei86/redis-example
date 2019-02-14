@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -67,6 +68,12 @@ public class RJedisConfig extends CachingConfigurerSupport {
         return template;
     }
 
+    // 简单K-V操作
+    @Bean
+    public ValueOperations<String, Object> valueOperations(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        return redisTemplate.opsForValue();
+    }
+
     /**
      * 跟spring-cache整合时才用到？另spring-cache默认用的SimpleCacheConfiguration.
      *
@@ -109,12 +116,6 @@ public class RJedisConfig extends CachingConfigurerSupport {
         ConcurrentMapCacheManager cmcm = new ConcurrentMapCacheManager();
 
         return rcm;
-    }
-
-    // 简单K-V操作
-    @Bean
-    public ValueOperations<String, String> valueOperations(RedisTemplate<String, String> redisTemplate) {
-        return redisTemplate.opsForValue();
     }
 
     @Bean
