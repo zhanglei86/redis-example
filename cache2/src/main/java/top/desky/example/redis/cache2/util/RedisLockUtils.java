@@ -17,7 +17,6 @@ import java.util.UUID;
 @Component
 public class RedisLockUtils {
     private static final String LOCK_SUCCESS = "OK";
-    private static final Long RELEASE_SUCCESS = 1L;
     private String lockedValue;
 
     /**
@@ -93,7 +92,7 @@ public class RedisLockUtils {
         }
         // 使用Lua脚本删除Redis中匹配value的key，可以避免由于方法执行时间过长而redis锁自动过期失效的时候误删其他线程的锁
         // 删除前要通过value来判断是否为自己的锁
-        String script = new StringBuffer()
+        String script = new StringBuilder()
                 .append("if redis.call('get', KEYS[1]) == ARGV[1] then ")
                 .append("   return redis.call('del', KEYS[1]) ")
                 .append("else ")
@@ -107,8 +106,7 @@ public class RedisLockUtils {
         //执行脚本
         Long exeResult = template.execute(redisScript, Arrays.asList(lockedKey), lockedValue);
 
-        boolean result = (RELEASE_SUCCESS == exeResult);
-
+        boolean result = (1 == exeResult);
         return result;
     }
 }

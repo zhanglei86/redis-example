@@ -1,4 +1,4 @@
-package top.desky.example.redis.cache1.util;
+package top.desky.example.redis.cache2.util;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;

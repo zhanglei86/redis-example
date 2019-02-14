@@ -19,7 +19,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
@@ -40,21 +39,6 @@ public class RJedisConfig extends CachingConfigurerSupport {
 
     @Autowired
     private RedisConnectionFactory factory;
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
-
-    @Bean
-    public void run() {
-        log.info("run==> redis连接工厂：{}", stringRedisTemplate.getConnectionFactory());
-        final String key = "zea";
-
-        //添加key
-        stringRedisTemplate.opsForValue().set(key, "lous");
-        //获取key
-        log.info("run==> 从redis中获取key是{}, value是{}", key, stringRedisTemplate.opsForValue().get(key));
-        //删除key
-        stringRedisTemplate.delete(key);
-    }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
@@ -71,7 +55,20 @@ public class RJedisConfig extends CachingConfigurerSupport {
     // 简单K-V操作
     @Bean
     public ValueOperations<String, Object> valueOperations(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        testInit(redisTemplate);
         return redisTemplate.opsForValue();
+    }
+
+    private void testInit(RedisTemplate<String, Object> redisTemplate) {
+        log.info("run==> redis连接工厂：{}", redisTemplate.getConnectionFactory());
+        final String key = "zea";
+
+        //添加key
+        redisTemplate.opsForValue().set(key, "lous");
+        //获取key
+        log.info("run==> 从redis中获取key是{}, value是{}", key, redisTemplate.opsForValue().get(key));
+        //删除key
+        //redisTemplate.delete(key);
     }
 
     /**
