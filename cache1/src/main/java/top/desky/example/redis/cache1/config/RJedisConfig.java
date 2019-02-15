@@ -54,9 +54,9 @@ public class RJedisConfig extends CachingConfigurerSupport {
 
     // 简单K-V操作
     @Bean
-    public ValueOperations<String, Object> valueOperations(@Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate) {
-        testInit(redisTemplate);
-        return redisTemplate.opsForValue();
+    public ValueOperations<String, Object> valueOperations(@Qualifier("redisTemplate") RedisTemplate<String, Object> template) {
+        testInit(template);
+        return template.opsForValue();
     }
 
     private void testInit(RedisTemplate<String, Object> redisTemplate) {

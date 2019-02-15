@@ -6,6 +6,9 @@ import top.desky.example.redis.cache2.util.RedisLockUtils;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 参考[distributed lock]的笔记
+ */
 public class LockTest extends BaseTestCase {
 
     @Autowired
