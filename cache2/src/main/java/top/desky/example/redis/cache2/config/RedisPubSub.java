@@ -25,7 +25,7 @@ import java.util.Date;
  *
  * @author atp
  */
-//@Service
+@Service
 public class RedisPubSub {
     private static final Logger logger = LoggerFactory.getLogger(RedisPubSub.class);
 
@@ -42,8 +42,6 @@ public class RedisPubSub {
 
     /**
      * 推送消息
-     *
-     * @param publisher
      */
     public void publish(String publisher, String content) {
         logger.info("message send {} by {}", content, publisher);
@@ -56,7 +54,7 @@ public class RedisPubSub {
         redisTemplate.convertAndSend(topic.getTopic(), pushMsg);
     }
 
-    //@Component
+    @Component
     public class MessageSubscriber {
 
         public void onMessage(SimpleMessage message, String pattern) {
@@ -101,18 +99,13 @@ public class RedisPubSub {
      *
      * @author atp
      */
-    //@Configuration
+    @Configuration
     public class ReidsPubSubConfig {
         /**
          * 将订阅器绑定到容器
-         *
-         * @param connectionFactory
-         * @return
          */
         @Bean
-        public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-                                                       MessageListenerAdapter listener) {
-
+        public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory, MessageListenerAdapter listener) {
             RedisMessageListenerContainer container = new RedisMessageListenerContainer();
             container.setConnectionFactory(connectionFactory);
             container.addMessageListener(listener, new PatternTopic("/redis/*"));
@@ -121,8 +114,6 @@ public class RedisPubSub {
 
         /**
          * 消息监听器，使用MessageAdapter可实现自动化解码及方法代理
-         *
-         * @return
          */
         @Bean
         public MessageListenerAdapter listener(Jackson2JsonRedisSerializer<Object> serializer, MessageSubscriber subscriber) {
