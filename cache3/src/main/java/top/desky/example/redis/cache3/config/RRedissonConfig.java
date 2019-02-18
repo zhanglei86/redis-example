@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Created by zealous on 2018/10/15.
@@ -19,13 +18,12 @@ public class RRedissonConfig {
 
     private final static Logger log = LoggerFactory.getLogger(RRedissonConfig.class);
 
-    //@Value("${spring.redis.cluster.nodes}")
-    @Value("${spring.redis.host}")
+    @Value("${spring.redis.cluster.nodes}")
     private String cluster;
     @Value("${spring.redis.password}")
     private String password;
 
-    //@Bean(destroyMethod = "shutdown")
+    @Bean(destroyMethod = "shutdown")
     public RedissonClient rClient() {
         String[] nodes = cluster.split(",");
         //redisson版本是3.5，集群的ip前面要加上“redis://”，不然会报错，3.2版本可不加
