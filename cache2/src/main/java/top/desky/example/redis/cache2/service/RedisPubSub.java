@@ -1,4 +1,4 @@
-package top.desky.example.redis.cache2.config;
+package top.desky.example.redis.cache2.service;
 
 
 import com.alibaba.fastjson.JSON;
