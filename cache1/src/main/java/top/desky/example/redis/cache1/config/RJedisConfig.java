@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -54,7 +53,7 @@ public class RJedisConfig extends CachingConfigurerSupport {
 
     // 简单K-V操作
     @Bean
-    public ValueOperations<String, Object> valueOperations(@Qualifier("redisTemplate") RedisTemplate<String, Object> template) {
+    public ValueOperations<String, Object> valueOperations(RedisTemplate<String, Object> template) {
         testInit(template);
         return template.opsForValue();
     }
@@ -68,7 +67,7 @@ public class RJedisConfig extends CachingConfigurerSupport {
         //获取key
         log.info("run==> 从redis中获取key是{}, value是{}", key, redisTemplate.opsForValue().get(key));
         //删除key
-        //redisTemplate.delete(key);
+        redisTemplate.delete(key);
     }
 
     /**
