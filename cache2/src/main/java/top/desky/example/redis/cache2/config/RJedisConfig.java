@@ -63,7 +63,7 @@ public class RJedisConfig extends CachingConfigurerSupport {
         //获取key
         log.info("run==> 从redis中获取key是{}, value是{}", key, redisTemplate.opsForValue().get(key));
         //删除key
-        //redisTemplate.delete(key);
+        redisTemplate.delete(key);
     }
 
     @Bean

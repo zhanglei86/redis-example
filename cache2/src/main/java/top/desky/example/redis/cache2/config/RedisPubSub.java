@@ -25,7 +25,7 @@ import java.util.Date;
  *
  * @author atp
  */
-@Service
+//@Service
 public class RedisPubSub {
     private static final Logger logger = LoggerFactory.getLogger(RedisPubSub.class);
 
@@ -34,7 +34,7 @@ public class RedisPubSub {
 
     private ChannelTopic topic = new ChannelTopic("/redis/pubsub");
 
-    @Scheduled(initialDelay = 5000, fixedDelay = 10000)
+    //@Scheduled(initialDelay = 5000, fixedDelay = 10000)
     private void schedule() {
         logger.info("publish message");
         publish("admin", "hey you must go now!");
@@ -56,7 +56,7 @@ public class RedisPubSub {
         redisTemplate.convertAndSend(topic.getTopic(), pushMsg);
     }
 
-    @Component
+    //@Component
     public class MessageSubscriber {
 
         public void onMessage(SimpleMessage message, String pattern) {
@@ -101,7 +101,7 @@ public class RedisPubSub {
      *
      * @author atp
      */
-    @Configuration
+    //@Configuration
     public class ReidsPubSubConfig {
         /**
          * 将订阅器绑定到容器
