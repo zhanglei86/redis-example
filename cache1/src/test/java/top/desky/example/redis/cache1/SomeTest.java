@@ -1,13 +1,17 @@
 package top.desky.example.redis.cache1;
 
+import com.alibaba.fastjson.JSON;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 public class SomeTest extends BaseTestCase {
 
@@ -17,7 +21,7 @@ public class SomeTest extends BaseTestCase {
     private StringRedisTemplate stringRedisTemplate;
 
     @Test
-    public void AstringRedis() {
+    public void testStr() {
         String key = "username";
         String value = "password";
 
@@ -27,7 +31,7 @@ public class SomeTest extends BaseTestCase {
     }
 
     @Test
-    public void BhashRedis() {
+    public void testHash() {
         String key = "userHash";
 
         //添加
@@ -40,7 +44,7 @@ public class SomeTest extends BaseTestCase {
     }
 
     @Test
-    public void ClistRedis() {
+    public void testList() {
         String key = "userList";
 
         List<String> trap = new ArrayList<>();
@@ -60,7 +64,7 @@ public class SomeTest extends BaseTestCase {
     }
 
     @Test
-    public void DsetRedis() {
+    public void testSet() {
         String key = "userSet";
 
         List<String> trap = new ArrayList<>();
@@ -77,12 +81,26 @@ public class SomeTest extends BaseTestCase {
     }
 
     @Test
-    public void EzetRedis() {
+    public void testZset() {
+        ZSetOperations ops = redisTemplate.opsForZSet();
+
         String key = "userZSet";
+        Calendar cal1 = Calendar.getInstance();
+        for (int i = 0; i < 5; i++) {
+            //延迟3秒
+            cal1.add(Calendar.SECOND, 3);
+            long second3later = cal1.getTimeInMillis() / 1000;
+            ops.add(key, "order100" + i, second3later);
+        }
+
+        Set<ZSetOperations.TypedTuple<String>> items = ops.rangeWithScores(key, 0, 1);
+        items.forEach(item -> {
+            log.info("zset遍历==>{}", JSON.toJSONString(item));
+        });
     }
 
     @Test
-    public void Zdel() {
+    public void del() {
         redisTemplate.opsForList().remove("userList", 100, "张无忌");
         redisTemplate.opsForSet().remove("userSet", "张无忌");
         redisTemplate.opsForHash().delete("userHash", "dada");
