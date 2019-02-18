@@ -16,6 +16,9 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -135,6 +138,28 @@ public class RJedisConfig extends CachingConfigurerSupport {
         template.afterPropertiesSet();
 
         return template;
+    }
+
+    /**
+     * 将订阅器绑定到容器
+     */
+    @Bean
+    public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory, MessageListenerAdapter listener) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(listener, new PatternTopic("/redis/*"));
+        return container;
+    }
+
+    /**
+     * 消息监听器，使用MessageAdapter可实现自动化解码及方法代理
+     */
+    @Bean
+    public MessageListenerAdapter listener(Jackson2JsonRedisSerializer<Object> serializer, RedisPubSub.MessageSubscriber subscriber) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(subscriber, "onMessage");
+        adapter.setSerializer(serializer);
+        adapter.afterPropertiesSet();
+        return adapter;
     }
 
 }
