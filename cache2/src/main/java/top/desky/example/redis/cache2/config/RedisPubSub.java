@@ -34,7 +34,7 @@ public class RedisPubSub {
 
     private ChannelTopic topic = new ChannelTopic("/redis/pubsub");
 
-    //@Scheduled(initialDelay = 5000, fixedDelay = 10000)
+    @Scheduled(initialDelay = 5000, fixedDelay = 10000)
     private void schedule() {
         logger.info("publish message");
         publish("admin", "hey you must go now!");
@@ -54,7 +54,7 @@ public class RedisPubSub {
         redisTemplate.convertAndSend(topic.getTopic(), pushMsg);
     }
 
-    @Component
+    //@Component
     public class MessageSubscriber {
 
         public void onMessage(SimpleMessage message, String pattern) {
@@ -104,7 +104,7 @@ public class RedisPubSub {
         /**
          * 将订阅器绑定到容器
          */
-        @Bean
+        //@Bean
         public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory, MessageListenerAdapter listener) {
             RedisMessageListenerContainer container = new RedisMessageListenerContainer();
             container.setConnectionFactory(connectionFactory);
@@ -115,7 +115,7 @@ public class RedisPubSub {
         /**
          * 消息监听器，使用MessageAdapter可实现自动化解码及方法代理
          */
-        @Bean
+        //@Bean
         public MessageListenerAdapter listener(Jackson2JsonRedisSerializer<Object> serializer, MessageSubscriber subscriber) {
             MessageListenerAdapter adapter = new MessageListenerAdapter(subscriber, "onMessage");
             adapter.setSerializer(serializer);
