@@ -18,24 +18,25 @@ import java.util.concurrent.TimeUnit;
 public class RDelayedQueueTest {
     private static final Logger log = LoggerFactory.getLogger(RDelayedQueueTest.class);
 
+    private static RedissonClient client;
     private static RBlockingQueue<String> blockingQueue;
-    private static RDelayedQueue<String> delayedQueue;
 
     static {
         Config config = new Config();
         config.useSingleServer().setAddress("redis://localhost:6379").setDatabase(1);
-        RedissonClient client = Redisson.create(config);
+        client = Redisson.create(config);
 
         blockingQueue = client.getBlockingQueue("delay_queue");
-        delayedQueue = client.getDelayedQueue(blockingQueue);
     }
 
     public static void main(String[] args) {
-        put();
-        get();
+        producer();
+        consumer();
     }
 
-    private static void put() {
+    private static void producer() {
+        RDelayedQueue<String> delayedQueue = client.getDelayedQueue(blockingQueue);
+
         String orderId;
         long expire;
         for (int i = 1; i <= 10; i++) {
@@ -46,21 +47,21 @@ public class RDelayedQueueTest {
         }
     }
 
-    private static void get() {
+    private static void consumer() {
         String orderId = null;
         String now;
         int i = 0;
         while (true) {
             log.info("====" + i);
-            i++;
             try {
                 orderId = blockingQueue.take();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             now = TimeConstant.DEFAULT_FORMATTER_LT2.format(LocalTime.now());
             log.info("订单是==>{}, 订单取消时间:{}", orderId, now);
+
+            i++;
         }
     }
 

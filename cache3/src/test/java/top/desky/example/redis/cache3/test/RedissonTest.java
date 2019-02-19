@@ -35,6 +35,7 @@ public class RedissonTest extends BaseTestCase {
     public void test2() {
         RQueue<String> queue = client.getQueue("anyQueue");
         queue.add("zealous");
+        boolean b1 = queue.contains("zea");
         String str1 = queue.peek();
         String str2 = queue.poll();
 
