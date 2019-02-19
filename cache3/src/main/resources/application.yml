@@ -1,7 +1,11 @@
 #head
+debug: false
 server:
   port: 8080
   connection-timeout: 10000
+management:
+  server:
+    port: 8081
 spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
