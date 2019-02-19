@@ -1,5 +1,4 @@
-/*
-package top.desky.example.redis.cache3.test;
+package top.desky.example.redis.cache3;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,4 +14,3 @@ public class Cache3ApplicationTests {
 	}
 
 }
-*/
