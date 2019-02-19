@@ -33,9 +33,12 @@ public class RedissonTest extends BaseTestCase {
 
     @Test
     public void test2() {
-        RQueue<String> distinationQueue = client.getQueue("anyQueue");
-        RDelayedQueue<String> delayedQueue = client.getDelayedQueue(distinationQueue);
+        RQueue<String> queue = client.getQueue("anyQueue");
+        queue.add("zealous");
+        String str1 = queue.peek();
+        String str2 = queue.poll();
 
+        RDelayedQueue<String> delayedQueue = client.getDelayedQueue(queue);
         // 10秒钟以后将消息发送到指定队列
         delayedQueue.offer("msg1", 10, TimeUnit.SECONDS);
         // 一分钟以后将消息发送到指定队列
@@ -43,16 +46,15 @@ public class RedissonTest extends BaseTestCase {
 
         int i = 0;
         while (true) {
-            List<String> list = distinationQueue.readAll();
-
+            System.out.println("====" + i);
+            i++;
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException ite) {
                 ite.printStackTrace();
             }
+            List<String> list = queue.readAll();
             list.forEach(System.out::println);
-            System.out.println("====" + i);
-            i++;
         }
     }
 }

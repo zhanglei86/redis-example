@@ -8,6 +8,7 @@ import java.time.LocalTime;
 /**
  * Created by zealous on 2019-02-19.
  */
+@Deprecated
 public class CallCdr implements Serializable {
 
     private String name;
