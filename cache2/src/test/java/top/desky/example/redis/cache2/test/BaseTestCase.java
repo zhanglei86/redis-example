@@ -7,10 +7,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.desky.example.redis.cache2.Cache2Application;
+
+import java.util.Date;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {Cache2Application.class})
@@ -46,8 +50,13 @@ public class BaseTestCase extends AbstractJUnit4SpringContextTests {
         System.err.println("data ==> " + JSON.toJSONString(data));
     }
 
+    @Value("${startTime}")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startTime;
+
     @Test
     public void testCase() {
+        printData(startTime);
         System.out.println("base testCase finish!");
     }
 
