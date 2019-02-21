@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 延迟队列测试，基于redisson实现
  * Created by zealous on 2019-02-19.
  */
 public class RDelayedQueueTest {
@@ -26,7 +27,7 @@ public class RDelayedQueueTest {
         config.useSingleServer().setAddress("redis://localhost:6379").setDatabase(1);
         client = Redisson.create(config);
 
-        blockingQueue = client.getBlockingQueue("delay_queue");
+        blockingQueue = client.getBlockingQueue("order_redisson");
     }
 
     public static void main(String[] args) {
