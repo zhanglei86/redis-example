@@ -14,6 +14,7 @@ spring:
         min-idle: 0 #最小空闲连接数
         max-idle: 8 #最大空闲连接数
         max-active: 8 #最大活跃链接数
+        max-wait: -1ms
   jpa:
     show-sql: true
     hibernate:

@@ -15,13 +15,11 @@ import java.util.UUID;
  * 通过redis实现分布式锁
  */
 @Component
+@Deprecated
 public class RedisLockUtils {
     private static final String LOCK_SUCCESS = "OK";
     private String lockedValue;
 
-    /**
-     * redis操作类
-     */
     @Autowired
     private RedisTemplate<String, Object> template;
 
