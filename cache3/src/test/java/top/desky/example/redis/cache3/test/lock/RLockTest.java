@@ -23,12 +23,12 @@ public class RLockTest extends BaseTestCase {
     public void test1() {
         IntStream.rangeClosed(1, 5)
                 .parallel()
-                .forEach(i -> executeLock(client));
-        executeLock(client);
+                .forEach(i -> executeLock());
+        executeLock();
     }
 
-    public void executeLock(RedissonClient redisson) {
-        RLock lock = redisson.getLock(KEY);
+    public void executeLock() {
+        RLock lock = client.getLock(KEY);
         boolean locked = false;
         try {
             log.info("1.try lock");
